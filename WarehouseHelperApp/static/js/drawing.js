@@ -4,27 +4,57 @@ import Hall from "./classes/Hall.js";
 
 let svg = d3.select("#" + WAREHOUSE_SVG_ID);
 let svgView = d3.select("#" + WAREHOUSE_SVG_ID + " g");
-let svgWidth = DEFAULT_SVG_WIDTH;
-let svgHeight = DEFAULT_SVG_HEIGHT;
+let svgWidth = SVG_VIEW_WIDTH;
+let svgHeight = SVG_VIEW_HEIGHT;
+let svgScale = 1;
+let zoom = d3.zoom()
+    .scaleExtent(SVG_DEFAULT_ZOOM_CONSTRAINTS)
+    .translateExtent(SVG_TRANSLATE_CONSTRAINTS);
+
+let halls = [
+    new Hall(1, 0, 1, true, false),
+    new Hall(0, 1, 2, false, false),
+    new Hall(1, 1, 3, false, false),
+    new Hall(0, 2, 4, false, false),
+    new Hall(1, 2, 5, false, true)
+]
 
 
 function handleZoom(e) {
     svgView.attr("transform", e.transform);
 }
 
+function handleWindowResize() {
+    if (svgHeight != window.innerHeight) {
+        resizeSvg(window.innerHeight - SVG_MARGIN * 2);
+    }
+}
+
+function resizeSvg(height) {
+    if (height <= SVG_VIEW_HEIGHT) {
+        svgHeight = height;
+        svgWidth = svgHeight * SVG_ASPECT_RATIO;
+        svgScale = svgHeight / SVG_VIEW_HEIGHT;
+
+        svg.attr("width", svgWidth)
+            .attr("height", svgHeight);
+        svgView.attr("width", svgWidth)
+            .attr("height", svgHeight)
+            .attr("transform", "translate(0,0) scale(" + svgScale + ")");
+        
+        
+        zoom.scaleExtent([svgScale, SVG_DEFAULT_ZOOM_CONSTRAINTS[1]])
+            .translateExtent(SVG_TRANSLATE_CONSTRAINTS);
+        svg.call(zoom.transform, d3.zoomIdentity.scale(svgScale));
+    }
+}
+
 function initSvg() {
-    svg.attr("width", DEFAULT_SVG_WIDTH)
-        .attr("height", DEFAULT_SVG_HEIGHT);
-
-    svgView.attr("width", DEFAULT_SVG_WIDTH)
-        .attr("height", DEFAULT_SVG_HEIGHT);
-
+    svgView.attr("transform", "translate(0,0) scale(1)");
     svg.call(
-        d3.zoom()
-            .scaleExtent(SVG_ZOOM_CONSTRAINTS)
-            .translateExtent(SVG_TRANSLATE_CONSTRAINTS)
-            .on("zoom", handleZoom)
+        zoom.on("zoom", handleZoom)
     );
+    resizeSvg(window.innerHeight - SVG_MARGIN * 2);
 }
 
 function drawShelf(x, y) {
@@ -43,8 +73,8 @@ function drawHallWalls(x, y) {
     svgView.append("rect")
         .attr("x", x)
         .attr("y", y)
-        .attr("width", svgWidth / HALL_GRID_X_SIZE)
-        .attr("height", svgHeight / HALL_GRID_Y_SIZE)
+        .attr("width", SVG_VIEW_WIDTH / HALL_GRID_X_SIZE)
+        .attr("height", SVG_VIEW_HEIGHT / HALL_GRID_Y_SIZE)
         .attr("class", HALL_CLASS)
         .attr("stroke", HALL_STROKE_COLOR)
         .attr("stroke-width", HALL_STROKE_WIDTH)
@@ -100,8 +130,8 @@ function drawVerticalDoor(x, y) {
 }
 
 function drawHall(hall) {
-    let hallX = (svgWidth / HALL_GRID_X_SIZE) * hall.gridX;
-    let hallY = (svgHeight / HALL_GRID_Y_SIZE) * hall.gridY;
+    let hallX = (SVG_VIEW_WIDTH / HALL_GRID_X_SIZE) * hall.gridX;
+    let hallY = (SVG_VIEW_HEIGHT / HALL_GRID_Y_SIZE) * hall.gridY;
 
     hall.rows.forEach((row, rowIndex) => {
         for (let i = 0; i < row.shelfCount / 2; i++) {
@@ -120,35 +150,31 @@ function drawHall(hall) {
     drawHallWalls(hallX, hallY);
 }
 
+function drawHalls(halls) {
+    halls.forEach((hall) => {
+        drawHall(hall);
+    
+        let hallX = (SVG_VIEW_WIDTH / HALL_GRID_X_SIZE) * hall.gridX;
+        let hallY = (SVG_VIEW_HEIGHT / HALL_GRID_Y_SIZE) * hall.gridY;
+    
+        halls.forEach((otherHall) => {
+            if (hall.gridX == otherHall.gridX && hall.gridY == otherHall.gridY + 1) {
+                let doorX = hallX + SHELF_WIDTH * SHELVES_PER_COLUMN + COLUMN_MARGIN;
+                let doorY = hallY;
+                drawHorizontalDoor(doorX, doorY);
+            }
+            if (hall.gridX == otherHall.gridX + 1 && hall.gridY == otherHall.gridY) {
+                let doorX = hallX;
+                let doorY1 = hallY + (FIRST_VERTICAL_DOOR_ROW - 1) * (SHELF_HEIGHT * 2 + SHELF_SPACING) + SHELF_HEIGHT;
+                let doorY2 = hallY + (SECOND_VERTICAL_DOOR_ROW - 1) * (SHELF_HEIGHT * 2 + SHELF_SPACING) + SHELF_HEIGHT;
+                drawVerticalDoor(doorX, doorY1);
+                drawVerticalDoor(doorX, doorY2);
+            }
+        });
+    });
+}
+
 
 initSvg();
-
-let halls = [
-    new Hall(1, 0, 1, true, false),
-    new Hall(0, 1, 2, false, false),
-    new Hall(1, 1, 3, false, false),
-    new Hall(0, 2, 4, false, false),
-    new Hall(1, 2, 5, false, true)
-]
-
-halls.forEach((hall) => {
-    drawHall(hall);
-
-    let hallX = (svgWidth / HALL_GRID_X_SIZE) * hall.gridX;
-    let hallY = (svgHeight / HALL_GRID_Y_SIZE) * hall.gridY;
-
-    halls.forEach((otherHall) => {
-        if (hall.gridX == otherHall.gridX && hall.gridY == otherHall.gridY + 1) {
-            let doorX = hallX + SHELF_WIDTH * SHELVES_PER_COLUMN + COLUMN_MARGIN;
-            let doorY = hallY;
-            drawHorizontalDoor(doorX, doorY);
-        }
-        if (hall.gridX == otherHall.gridX + 1 && hall.gridY == otherHall.gridY) {
-            let doorX = hallX;
-            let doorY1 = hallY + (FIRST_VERTICAL_DOOR_ROW - 1) * (SHELF_HEIGHT * 2 + SHELF_SPACING) + SHELF_HEIGHT;
-            let doorY2 = hallY + (SECOND_VERTICAL_DOOR_ROW - 1) * (SHELF_HEIGHT * 2 + SHELF_SPACING) + SHELF_HEIGHT;
-            drawVerticalDoor(doorX, doorY1);
-            drawVerticalDoor(doorX, doorY2);
-        }
-    });
-});
+window.addEventListener("resize", handleWindowResize);
+drawHalls(halls);

@@ -7,10 +7,12 @@ const DELIVERY_CLASS = "delivery";
 const DOOR_CLASS = "door";
 
 // Drawing: SVG elements
-const DEFAULT_SVG_WIDTH = 560;          // px
-const DEFAULT_SVG_HEIGHT = 900;         // px
-const SVG_ZOOM_CONSTRAINTS = [1, 5];            // [min, max] scales
-const SVG_TRANSLATE_CONSTRAINTS = [[0, 0], [DEFAULT_SVG_WIDTH, DEFAULT_SVG_HEIGHT]];            // [[min, max]_1, [min, max]_2]
+const SVG_VIEW_WIDTH = 560;          // px
+const SVG_VIEW_HEIGHT = 900;         // px
+const SVG_ASPECT_RATIO = SVG_VIEW_WIDTH / SVG_VIEW_HEIGHT;
+const SVG_DEFAULT_ZOOM_CONSTRAINTS = [1, 5];            // [min, max] scales
+const SVG_TRANSLATE_CONSTRAINTS = [[0, 0], [SVG_VIEW_WIDTH, SVG_VIEW_HEIGHT]];            // [[min, max]_1, [min, max]_2]
+const SVG_MARGIN = 12;                   // px
 
 // Drawing: Warehouse sizes
 const HALL_GRID_X_SIZE = 2;
