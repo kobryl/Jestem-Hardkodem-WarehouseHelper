@@ -12,7 +12,8 @@ class Product(models.Model):
     height = models.IntegerField()  # in mm
 
     def __str__(self):
-        return self.name + f", weight: {self.weight} kg, size [mm]: {self.length}x{self.width}x{self.height}"
+        return self.name + f", weight: {self.weight} kg, size [mm]: " \
+                           f"{self.length}x{self.width}x{self.height}"
 
 
 class Order(models.Model):
@@ -52,7 +53,8 @@ class ProductLocation(models.Model):
 
 class Route(models.Model):
     """
-    Existence of Route for Order means that Order is ready to be processed, e.g. the algorithm has produced
+    Existence of Route for Order means that Order is
+    ready to be processed, e.g. the algorithm has produced
     the route and pallet procedure.
     """
     order = models.OneToOneField(Order, on_delete=models.CASCADE)

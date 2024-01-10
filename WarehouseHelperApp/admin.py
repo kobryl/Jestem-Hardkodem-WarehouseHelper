@@ -17,8 +17,7 @@ class ProductAdmin(admin.ModelAdmin):
         location = models.ProductLocation.objects.filter(product=obj).first()
         if location:
             return location.location
-        else:
-            return "Not found"
+        return "Not found"
 
 
 @admin.register(models.ProductLocation)
@@ -36,8 +35,7 @@ class OrderAdmin(admin.ModelAdmin):
         route = models.Route.objects.filter(order=obj).first()
         if route:
             return route
-        else:
-            return "Not ready yet. Please check again later."
+        return "Not ready yet. Please check again later."
 
     def view_items(self, obj):
         count = models.OrderItem.objects.filter(order=obj).count()

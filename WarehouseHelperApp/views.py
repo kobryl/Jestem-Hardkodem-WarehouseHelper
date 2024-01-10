@@ -1,20 +1,28 @@
+"""
+Views for WarehouseHelperApp
+"""
 import csv
 
-from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
+from WarehouseHelperApp.models import Product, ProductLocation, Order, OrderItem
 from WarehouseHelperApp.forms import CSVUploadForm, OrderForm, OrderFormset
-import WarehouseHelperApp.models as models
 from consts import ORDER_FILE_PREFIX, ORDERS_DIR, LOCATIONS_FILE, PRODUCTS_FILE
 
 
 # Create your views here.
 
 def index(request):
+    """
+    Main page
+    """
     return render(request, 'index.html')
 
 
 def import_products_from_csv(request):
+    """
+    Import products from CSV file form page
+    """
     if request.method == 'POST':
         form = CSVUploadForm(request.POST, request.FILES)
         if form.is_valid():
@@ -25,7 +33,7 @@ def import_products_from_csv(request):
             for row in csv_reader:
                 print(row)
                 size = row['Wymiary (mm)'].split('x')
-                models.Product.objects.get_or_create(
+                Product.objects.get_or_create(
                     id=row['ID Produktu'],
                     name=row['Nazwa Produktu'],
                     weight=row['Waga (kg)'],
@@ -35,9 +43,10 @@ def import_products_from_csv(request):
                 )
                 rows_to_save.append(row)
 
-            with open(PRODUCTS_FILE, 'a') as f:
+            with open(PRODUCTS_FILE, 'a', encoding='utf-8') as f:
                 for row in rows_to_save:
-                    f.write(f"{row['ID Produktu']},{row['Nazwa Produktu']},{row['Waga (kg)']},{row['Wymiary (mm)']}\n")
+                    f.write(f"{row['ID Produktu']},{row['Nazwa Produktu']},"
+                            f"{row['Waga (kg)']},{row['Wymiary (mm)']}\n")
 
             return redirect('success')
     else:
@@ -47,6 +56,9 @@ def import_products_from_csv(request):
 
 
 def import_locations_from_csv(request):
+    """
+    Import locations from CSV file form page
+    """
     if request.method == 'POST':
         form = CSVUploadForm(request.POST, request.FILES)
         if form.is_valid():
@@ -55,13 +67,13 @@ def import_locations_from_csv(request):
             rows_to_save = []
 
             for row in csv_reader:
-                models.ProductLocation.objects.get_or_create(
+                ProductLocation.objects.get_or_create(
                     product_id=row['ID Produktu'],
                     location=row['Lokacja']
                 )
                 rows_to_save.append(row)
 
-            with open(LOCATIONS_FILE, 'a') as f:
+            with open(LOCATIONS_FILE, 'a', encoding='utf-8') as f:
                 for row in rows_to_save:
                     f.write(f"{row['Lokacja']},{row['ID Produktu']}\n")
 
@@ -73,6 +85,9 @@ def import_locations_from_csv(request):
 
 
 def import_order_from_csv(request):
+    """
+    Import order from CSV file form page
+    """
     if request.method == 'POST':
         form = CSVUploadForm(request.POST, request.FILES)
         if form.is_valid():
@@ -80,9 +95,9 @@ def import_order_from_csv(request):
             csv_file = raw_file.decode('utf-8').splitlines()
             csv_reader = csv.DictReader(csv_file)
 
-            order = models.Order.objects.create()
+            order = Order.objects.create()
             for row in csv_reader:
-                models.OrderItem.objects.create(
+                OrderItem.objects.create(
                     product_id=row['ID Produktu'],
                     quantity=row['Ilość'],
                     order=order
@@ -99,16 +114,22 @@ def import_order_from_csv(request):
 
 
 def success(request):
+    """
+    Success page
+    """
     return render(request, 'success.html')
 
 
 def new_order(request):
+    """
+    New order form page
+    """
     if request.method == 'POST':
         form = OrderForm(request.POST)
         if form.is_valid():
-            product = models.Product.objects.get(name=form.cleaned_data['product_id'])
-            order = models.Order.objects.create()
-            models.OrderItem.objects.create(
+            product = Product.objects.get(name=form.cleaned_data['product_id'])
+            order = Order.objects.create()
+            OrderItem.objects.create(
                 product=product,
                 quantity=form.cleaned_data['quantity'],
                 order=order
@@ -121,18 +142,21 @@ def new_order(request):
     if request.method == 'POST':
         formset = OrderFormset(request.POST)
         if formset.is_valid():
-            order = models.Order.objects.create()
+            order = Order.objects.create()
             csv_data = 'ID Produktu,Nazwa Produktu,Lokacja,Ilość\n'
             for form in formset:
-                product = models.Product.objects.get(id=form.cleaned_data['product'].id)
-                models.OrderItem.objects.create(
+                product = Product.objects.get(id=form.cleaned_data['product'].id)
+                OrderItem.objects.create(
                     product=product,
                     quantity=form.cleaned_data['quantity'],
                     order=order
                 )
-                csv_data += f"{product.id},{product.name},{models.ProductLocation.objects.get(product=product)},{form.cleaned_data['quantity']}\n"
+                csv_data += f"{product.id},{product.name}," \
+                            f"{ProductLocation.objects.get(product=product)}," \
+                            f"{form.cleaned_data['quantity']}\n"
 
-            with open(ORDERS_DIR / f"{ORDER_FILE_PREFIX}{order.id}.csv", 'w') as f:
+            with open(ORDERS_DIR / f"{ORDER_FILE_PREFIX}{order.id}.csv", 'w',
+                      encoding='utf-8') as f:
                 f.write(csv_data)
             return redirect('success')
     else:
