@@ -14,16 +14,17 @@ export default class Hall {
 
         this.rows = [];
         for (let i = 1; i <= HALL_ROW_COUNT; i++) {
+            let isReversed = (i + 1) % 2;
             if (this.hasOffice || this.hasDelivery) {
                 if (i > HALL_ROW_COUNT - HALL_HALF_ROW_COUNT) {
-                    this.rows.push(new Row(i, true));
+                    this.rows.push(new Row(i, true, isReversed));
                 }
                 else {
-                    this.rows.push(new Row(i, false));
+                    this.rows.push(new Row(i, false, isReversed));
                 }
             }
             else {
-                this.rows.push(new Row(i, false));
+                this.rows.push(new Row(i, false, isReversed));
             }
         }
     }

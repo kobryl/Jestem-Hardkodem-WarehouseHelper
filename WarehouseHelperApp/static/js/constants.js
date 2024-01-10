@@ -5,6 +5,11 @@ const HALL_CLASS = "hall";
 const OFFICE_CLASS = "office";
 const DELIVERY_CLASS = "delivery";
 const DOOR_CLASS = "door";
+const LABEL_CLASS = "label";
+const ADDITIONAL_ROOM_LABEL_CLASS = "addroom-label";
+const HALL_LABEL_CLASS = "hall-label";
+const ROW_LABEL_CLASS = "row-label";
+const SHELF_LABEL_CLASS = "shelf-label";
 
 // Drawing: SVG elements
 const SVG_VIEW_WIDTH = 560;          // px
@@ -17,6 +22,8 @@ const SVG_MARGIN = 12;                   // px
 // Drawing: Warehouse sizes
 const HALL_GRID_X_SIZE = 2;
 const HALL_GRID_Y_SIZE = 3;
+const HALL_WIDTH = SVG_VIEW_WIDTH / HALL_GRID_X_SIZE;
+const HALL_HEIGHT = SVG_VIEW_HEIGHT / HALL_GRID_Y_SIZE;
 const SHELVES_PER_COLUMN = 4;
 const COLUMN_MARGIN = 14;           // px
 const SHELF_WIDTH = 28;             // px
@@ -32,6 +39,7 @@ const DOOR_THICKNESS = 4;           // px
 const DOOR_INSET = 2;               // px
 const FIRST_VERTICAL_DOOR_ROW = 2;
 const SECOND_VERTICAL_DOOR_ROW = 5;
+const ROW_HEIGHT = 2 * SHELF_HEIGHT + SHELF_SPACING;
 
 // Drawing: Styles
 const HALL_STROKE_COLOR = "black";
@@ -47,3 +55,10 @@ const DELIVERY_STROKE_COLOR = "#E69D3F";
 const DELIVERY_STROKE_WIDTH = 2;            // px
 const DELIVERY_FILL_COLOR = "#F8DEBE";
 const DOOR_FILL_COLOR = "white";
+const ROW_LABEL_COLOR = "#aaa";
+const SHELF_LABEL_COLOR = "#aaa";
+
+// Drawing: Labels
+const OFFICE_LABEL = "OFFICE";
+const DELIVERY_LABEL = "DELIVERY";
+const HALL_LABEL_ROW = 4;

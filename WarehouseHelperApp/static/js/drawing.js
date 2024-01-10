@@ -19,6 +19,8 @@ let halls = [
     new Hall(1, 2, 5, false, true)
 ]
 
+let drawLabels = true;
+
 
 function handleZoom(e) {
     svgView.attr("transform", e.transform);
@@ -28,6 +30,10 @@ function handleWindowResize() {
     if (svgHeight != window.innerHeight) {
         resizeSvg(window.innerHeight - SVG_MARGIN * 2);
     }
+}
+
+function clearSvg() {
+    svgView.selectAll("rect").remove();
 }
 
 function resizeSvg(height) {
@@ -57,6 +63,19 @@ function initSvg() {
     resizeSvg(window.innerHeight - SVG_MARGIN * 2);
 }
 
+function drawLabel(x, y, text, classes=null, color=null) {
+    let classNames = LABEL_CLASS;
+    console.log(color);
+    if (classes != null) classes.forEach((c) => classNames += " " + c);
+    svgView.append("text")
+        .attr("x", x)
+        .attr("y", y)
+        .attr("text-anchor", "middle")
+        .attr("fill", color != null ? color : "black")
+        .attr("class", classNames)
+        .text(text);
+}
+
 function drawShelf(x, y) {
     svgView.append("rect")
         .attr("x", x)
@@ -73,8 +92,8 @@ function drawHallWalls(x, y) {
     svgView.append("rect")
         .attr("x", x)
         .attr("y", y)
-        .attr("width", SVG_VIEW_WIDTH / HALL_GRID_X_SIZE)
-        .attr("height", SVG_VIEW_HEIGHT / HALL_GRID_Y_SIZE)
+        .attr("width", HALL_WIDTH)
+        .attr("height", HALL_HEIGHT)
         .attr("class", HALL_CLASS)
         .attr("stroke", HALL_STROKE_COLOR)
         .attr("stroke-width", HALL_STROKE_WIDTH)
@@ -91,6 +110,10 @@ function drawOffice(x, y) {
         .attr("stroke", OFFICE_STROKE_COLOR)
         .attr("stroke-width", OFFICE_STROKE_WIDTH)
         .attr("fill", OFFICE_FILL_COLOR);
+
+    if (drawLabels) {
+        drawLabel(x + OFFICE_WIDTH / 2, y + OFFICE_HEIGHT / 2, OFFICE_LABEL, [ADDITIONAL_ROOM_LABEL_CLASS]);
+    }
 }
 
 function drawDelivery(x, y) {
@@ -103,6 +126,10 @@ function drawDelivery(x, y) {
         .attr("stroke", DELIVERY_STROKE_COLOR)
         .attr("stroke-width", DELIVERY_STROKE_WIDTH)
         .attr("fill", DELIVERY_FILL_COLOR);
+        
+    if (drawLabels) {
+        drawLabel(x + DELIVERY_WIDTH / 2, y + DELIVERY_HEIGHT / 2, DELIVERY_LABEL, [ADDITIONAL_ROOM_LABEL_CLASS])
+    }
 }
 
 function drawHorizontalDoor(x, y) {
@@ -130,32 +157,55 @@ function drawVerticalDoor(x, y) {
 }
 
 function drawHall(hall) {
-    let hallX = (SVG_VIEW_WIDTH / HALL_GRID_X_SIZE) * hall.gridX;
-    let hallY = (SVG_VIEW_HEIGHT / HALL_GRID_Y_SIZE) * hall.gridY;
+    let hallX = HALL_WIDTH * hall.gridX;
+    let hallY = HALL_HEIGHT * hall.gridY;
 
     hall.rows.forEach((row, rowIndex) => {
-        for (let i = 0; i < row.shelfCount / 2; i++) {
-            let x = hallX + COLUMN_MARGIN + SHELF_WIDTH * i;
-            let y = hallY + (2 * SHELF_HEIGHT + SHELF_SPACING) * rowIndex;
-            if (i >= SHELVES_PER_COLUMN) x += COLUMN_MARGIN * 2;
+        row.upperShelves.forEach((shelf, shelfIndex) => {
+            let x = hallX + COLUMN_MARGIN + SHELF_WIDTH * shelfIndex;
+            let y = hallY + ROW_HEIGHT * rowIndex;
+            if (shelfIndex >= SHELVES_PER_COLUMN) x += COLUMN_MARGIN * 2;
             drawShelf(x, y);
-            drawShelf(x, y + SHELF_SPACING + SHELF_HEIGHT);
+
+            if (drawLabels) {
+                drawLabel(x + SHELF_WIDTH / 2, y + SHELF_HEIGHT * 5 / 7, shelf.label, [SHELF_LABEL_CLASS], SHELF_LABEL_COLOR);
+            }
+        })
+        row.lowerShelves.forEach((shelf, shelfIndex) => {
+            let x = hallX + COLUMN_MARGIN + SHELF_WIDTH * shelfIndex;
+            let y = hallY + ROW_HEIGHT * rowIndex + SHELF_SPACING + SHELF_HEIGHT;
+            if (shelfIndex >= SHELVES_PER_COLUMN) x += COLUMN_MARGIN * 2;
+            drawShelf(x, y);
+
+            if (drawLabels) {
+                drawLabel(x + SHELF_WIDTH / 2, y + SHELF_HEIGHT * 5 / 7, shelf.label, [SHELF_LABEL_CLASS], SHELF_LABEL_COLOR);
+            }
+        })
+
+        if (drawLabels) {
+            let labelX = hallX + COLUMN_MARGIN * 2 + SHELF_WIDTH * SHELVES_PER_COLUMN;
+            let labelY = hallY + SHELF_HEIGHT * 2 + ROW_HEIGHT * rowIndex;
+            drawLabel(labelX, labelY, row.label, [ROW_LABEL_CLASS], ROW_LABEL_COLOR);    
         }
     });
 
     let additionalRoomX = hallX + SHELVES_PER_COLUMN * SHELF_WIDTH + 3 * COLUMN_MARGIN;
-    let additionalRoomY = hallY + (2 * SHELF_HEIGHT + SHELF_SPACING) * hall.fullRowCount - SHELF_HEIGHT;
+    let additionalRoomY = hallY + ROW_HEIGHT * hall.fullRowCount - SHELF_HEIGHT;
     if (hall.hasOffice) drawOffice(additionalRoomX, additionalRoomY);
     if (hall.hasDelivery) drawDelivery(additionalRoomX, additionalRoomY);
     drawHallWalls(hallX, hallY);
+
+    if (drawLabels) {
+        drawLabel(hallX + HALL_WIDTH / 2, hallY + ROW_HEIGHT * HALL_LABEL_ROW, hall.label, [HALL_LABEL_CLASS]);
+    }
 }
 
 function drawHalls(halls) {
     halls.forEach((hall) => {
         drawHall(hall);
-    
-        let hallX = (SVG_VIEW_WIDTH / HALL_GRID_X_SIZE) * hall.gridX;
-        let hallY = (SVG_VIEW_HEIGHT / HALL_GRID_Y_SIZE) * hall.gridY;
+
+        let hallX = HALL_WIDTH * hall.gridX;
+        let hallY = HALL_HEIGHT * hall.gridY;
     
         halls.forEach((otherHall) => {
             if (hall.gridX == otherHall.gridX && hall.gridY == otherHall.gridY + 1) {
