@@ -55,7 +55,7 @@ class Route(models.Model):
     Existence of Route for Order means that Order is ready to be processed, e.g. the algorithm has produced
     the route and pallet procedure.
     """
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, unique=True)  # One-to-one relationship
+    order = models.OneToOneField(Order, on_delete=models.CASCADE)
 
     def __str__(self):
         return f"Route for order {self.order.id}"

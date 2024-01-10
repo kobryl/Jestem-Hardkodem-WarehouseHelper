@@ -36,10 +36,12 @@ for i in range(1, ORDER_COUNT + 1):
     with open(ORDERS_DIR / f"{ORDER_FILE_PREFIX}{i}.csv") as csvfile:
         reader = csv.reader(csvfile)
         next(reader, None)  # skip the headers
-        order = Order.objects.create()
+        order, _ = Order.objects.get_or_create(id=i)
+        print(order)
         for row in reader:
             product = Product.objects.get(id=row[0])
-            OrderItem.objects.create(
+            print(product)
+            _, _ = OrderItem.objects.get_or_create(
                 product=product,
                 quantity=row[3],
                 order=order
