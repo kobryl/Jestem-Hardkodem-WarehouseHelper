@@ -7,3 +7,4 @@ from WarehouseHelperApp import models
 admin.site.register(models.Product)
 admin.site.register(models.OrderItem)
 admin.site.register(models.ProductLocation)
+admin.site.register(models.Order)
