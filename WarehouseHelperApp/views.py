@@ -1,8 +1,9 @@
 import csv
 
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
-from WarehouseHelperApp.forms import CSVUploadForm
+from WarehouseHelperApp.forms import CSVUploadForm, OrderForm, OrderFormset
 import WarehouseHelperApp.models as models
 from consts import ORDER_FILE_PREFIX, ORDERS_DIR, LOCATIONS_FILE, PRODUCTS_FILE
 
@@ -96,5 +97,45 @@ def import_order_from_csv(request):
 
     return render(request, 'import_order_from_csv.html', {'form': form})
 
+
 def success(request):
     return render(request, 'success.html')
+
+
+def new_order(request):
+    if request.method == 'POST':
+        form = OrderForm(request.POST)
+        if form.is_valid():
+            product = models.Product.objects.get(name=form.cleaned_data['product_id'])
+            order = models.Order.objects.create()
+            models.OrderItem.objects.create(
+                product=product,
+                quantity=form.cleaned_data['quantity'],
+                order=order
+            )
+            return redirect('success')
+    else:
+        form = OrderForm()
+
+    template_name = 'new_order.html'
+    if request.method == 'POST':
+        formset = OrderFormset(request.POST)
+        if formset.is_valid():
+            order = models.Order.objects.create()
+            csv_data = 'ID Produktu,Nazwa Produktu,Lokacja,Ilość\n'
+            for form in formset:
+                product = models.Product.objects.get(id=form.cleaned_data['product'].id)
+                models.OrderItem.objects.create(
+                    product=product,
+                    quantity=form.cleaned_data['quantity'],
+                    order=order
+                )
+                csv_data += f"{product.id},{product.name},{models.ProductLocation.objects.get(product=product)},{form.cleaned_data['quantity']}\n"
+
+            with open(ORDERS_DIR / f"{ORDER_FILE_PREFIX}{order.id}.csv", 'w') as f:
+                f.write(csv_data)
+            return redirect('success')
+    else:
+        formset = OrderFormset(request.GET or None)
+
+    return render(request, template_name, {'formset': formset})

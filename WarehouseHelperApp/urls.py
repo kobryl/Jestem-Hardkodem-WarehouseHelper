@@ -24,4 +24,5 @@ urlpatterns = [
     path('success/', views.success, name='success'),
     path('import/locations/', views.import_locations_from_csv, name='import_locations_from_csv'),
     path('import/order/', views.import_order_from_csv, name='import_ordera_from_csv'),
+    path('new/order/', views.new_order, name='new_order'),
 ]
