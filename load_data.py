@@ -1,8 +1,8 @@
 import csv
+import os
 
 from WarehouseHelperApp.models import Product, OrderItem, ProductLocation, Order
-from consts import PRODUCTS_FILE, LOCATIONS_FILE, ORDERS_DIR, ORDER_FILE_PREFIX, ORDER_COUNT
-
+from consts import PRODUCTS_FILE, LOCATIONS_FILE, ORDERS_DIR, ORDER_FILE_PREFIX, ORDER_COUNT, DEFAULT_PRIORITY
 
 # Load products
 with open(PRODUCTS_FILE) as csvfile:
@@ -33,6 +33,7 @@ with open(LOCATIONS_FILE) as csvfile:
 
 # Load orders
 for i in range(1, ORDER_COUNT + 1):
+    prepared_data = DEFAULT_PRIORITY + "\n"
     with open(ORDERS_DIR / f"{ORDER_FILE_PREFIX}{i}.csv") as csvfile:
         reader = csv.reader(csvfile)
         next(reader, None)  # skip the headers
@@ -46,3 +47,8 @@ for i in range(1, ORDER_COUNT + 1):
                 quantity=row[3],
                 order=order
             )
+            prepared_data += f"{product.id} {product.weight} {product.length} {product.width} {product.height} {row[2]} {row[3]}\n"
+
+    with open(ORDERS_DIR / f"{ORDER_FILE_PREFIX}{i}.txt", 'w') as f:
+        f.write(prepared_data)
+    os.startfile(f'path.exe', '', f'{ORDERS_DIR / f"{ORDER_FILE_PREFIX}{order.id}"}.txt')

@@ -2,13 +2,14 @@
 Views for WarehouseHelperApp
 """
 import csv
+import os
 
 import django
 from django.shortcuts import render, redirect
 
 from WarehouseHelperApp.models import Product, ProductLocation, Order, OrderItem, Route
 from WarehouseHelperApp.forms import CSVUploadForm, OrderForm, OrderFormset, RouteSelectionForm
-from consts import ORDER_FILE_PREFIX, ORDERS_DIR, LOCATIONS_FILE, PRODUCTS_FILE
+from consts import ORDER_FILE_PREFIX, ORDERS_DIR, LOCATIONS_FILE, PRODUCTS_FILE, DEFAULT_PRIORITY
 
 
 # Create your views here.
@@ -95,6 +96,7 @@ def import_order_from_csv(request):
             raw_file = request.FILES['csv_file'].read()
             csv_file = raw_file.decode('utf-8').splitlines()
             csv_reader = csv.DictReader(csv_file)
+            prepared_data = DEFAULT_PRIORITY + "\n"
 
             order = Order.objects.create()
             for row in csv_reader:
@@ -103,9 +105,20 @@ def import_order_from_csv(request):
                     quantity=row['Ilość'],
                     order=order
                 )
+                product = Product.objects.get(id=row['ID Produktu'])
+                prepared_data += f"{product.id} {product.weight} " \
+                                 f"{product.length} {product.width} " \
+                                 f"{product.height} " \
+                                 f"{ProductLocation.objects.get(product=product)} " \
+                                 f"{row['Ilość']}\n"
 
             with open(ORDERS_DIR / f"{ORDER_FILE_PREFIX}{order.id}.csv", 'wb') as f:
                 f.write(raw_file)
+
+            with open(ORDERS_DIR / f"{ORDER_FILE_PREFIX}{order.id}.txt", 'w') as f:
+                f.write(prepared_data)
+
+            os.startfile(f'path.exe', '', f'{ORDERS_DIR / f"{ORDER_FILE_PREFIX}{order.id}"}.txt')
 
             return redirect('success')
     else:
@@ -125,25 +138,12 @@ def new_order(request):
     """
     New order form page
     """
-    if request.method == 'POST':
-        form = OrderForm(request.POST)
-        if form.is_valid():
-            product = Product.objects.get(name=form.cleaned_data['product_id'])
-            order = Order.objects.create()
-            OrderItem.objects.create(
-                product=product,
-                quantity=form.cleaned_data['quantity'],
-                order=order
-            )
-            return redirect('success')
-    else:
-        form = OrderForm()
-
     template_name = 'new_order.html'
     if request.method == 'POST':
         formset = OrderFormset(request.POST)
         if formset.is_valid():
             order = Order.objects.create()
+            prepared_data = DEFAULT_PRIORITY + "\n"
             csv_data = 'ID Produktu,Nazwa Produktu,Lokacja,Ilość\n'
             for form in formset:
                 product = Product.objects.get(id=form.cleaned_data['product'].id)
@@ -155,10 +155,18 @@ def new_order(request):
                 csv_data += f"{product.id},{product.name}," \
                             f"{ProductLocation.objects.get(product=product)}," \
                             f"{form.cleaned_data['quantity']}\n"
+                prepared_data += f"{product.id} {product.weight} " \
+                                 f"{product.length} {product.width} " \
+                                 f"{product.height} " \
+                                 f"{ProductLocation.objects.get(product=product)} " \
+                                 f"{form.cleaned_data['quantity']}\n"
 
             with open(ORDERS_DIR / f"{ORDER_FILE_PREFIX}{order.id}.csv", 'w',
                       encoding='utf-8') as f:
                 f.write(csv_data)
+            with open(ORDERS_DIR / f"{ORDER_FILE_PREFIX}{order.id}.txt", 'w') as f:
+                f.write(prepared_data)
+            os.startfile(f'path.exe', '', f'{ORDERS_DIR / f"{ORDER_FILE_PREFIX}{order.id}"}.txt')
             return redirect('success')
     else:
         formset = OrderFormset(request.GET or None)
