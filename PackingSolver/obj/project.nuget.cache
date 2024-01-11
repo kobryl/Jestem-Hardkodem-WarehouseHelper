@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "dm8/5dcBtWOUwDpjX7MTOFZ32IMNOOOLqu6Ip6d7m7NW3hu+e756VN8Ql83cm1DIG76HxjZn7K3pxpNPTRyLJA==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\micha\\source\\repos\\Jestem-Hardkodem-WarehouseHelper\\PackingSolver\\CromulentBisgetti.ContainerPacking.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\micha\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
+    "C:\\Users\\micha\\.nuget\\packages\\netstandard.library\\2.0.3\\netstandard.library.2.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}

@@ -1,0 +1,10 @@
+C:\Users\micha\source\repos\Jestem-Hardkodem-WarehouseHelper\PackingSolver\bin\Debug\netstandard2.0\CromulentBisgetti.ContainerPacking.deps.json
+C:\Users\micha\source\repos\Jestem-Hardkodem-WarehouseHelper\PackingSolver\bin\Debug\netstandard2.0\CromulentBisgetti.ContainerPacking.dll
+C:\Users\micha\source\repos\Jestem-Hardkodem-WarehouseHelper\PackingSolver\bin\Debug\netstandard2.0\CromulentBisgetti.ContainerPacking.pdb
+C:\Users\micha\source\repos\Jestem-Hardkodem-WarehouseHelper\PackingSolver\obj\Debug\netstandard2.0\CromulentBisgetti.ContainerPacking.csproj.AssemblyReference.cache
+C:\Users\micha\source\repos\Jestem-Hardkodem-WarehouseHelper\PackingSolver\obj\Debug\netstandard2.0\CromulentBisgetti.ContainerPacking.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\micha\source\repos\Jestem-Hardkodem-WarehouseHelper\PackingSolver\obj\Debug\netstandard2.0\CromulentBisgetti.ContainerPacking.AssemblyInfoInputs.cache
+C:\Users\micha\source\repos\Jestem-Hardkodem-WarehouseHelper\PackingSolver\obj\Debug\netstandard2.0\CromulentBisgetti.ContainerPacking.AssemblyInfo.cs
+C:\Users\micha\source\repos\Jestem-Hardkodem-WarehouseHelper\PackingSolver\obj\Debug\netstandard2.0\CromulentBisgetti.ContainerPacking.csproj.CoreCompileInputs.cache
+C:\Users\micha\source\repos\Jestem-Hardkodem-WarehouseHelper\PackingSolver\obj\Debug\netstandard2.0\CromulentBisgetti.ContainerPacking.dll
+C:\Users\micha\source\repos\Jestem-Hardkodem-WarehouseHelper\PackingSolver\obj\Debug\netstandard2.0\CromulentBisgetti.ContainerPacking.pdb

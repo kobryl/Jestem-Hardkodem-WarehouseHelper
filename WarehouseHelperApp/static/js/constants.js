@@ -10,6 +10,7 @@ const ADDITIONAL_ROOM_LABEL_CLASS = "addroom-label";
 const HALL_LABEL_CLASS = "hall-label";
 const ROW_LABEL_CLASS = "row-label";
 const SHELF_LABEL_CLASS = "shelf-label";
+const PACKING_CONTAINER_ID = "packing-container";
 
 // Drawing: SVG elements
 const SVG_VIEW_WIDTH = 560;          // px
@@ -65,3 +66,5 @@ const LINE_WIDTH = 2;
 const OFFICE_LABEL = "OFFICE";
 const DELIVERY_LABEL = "DELIVERY";
 const HALL_LABEL_ROW = 4;
+
+// Packing

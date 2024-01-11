@@ -1,9 +1,13 @@
 {% include "includes/header.html" %}
 {% load static %}
 
-<script src="{% static 'js/drawing.js' %}" type="module"></script>
-<svg id="warehouse" width="560" height="900">
-    <g></g>
-</svg>
+
+<script src="{% static 'js/packing.js' %}" type="module"></script>
+<div class="main">
+    <svg id="warehouse" width="560" height="900">
+        <g></g>
+    </svg>
+    <div id="packing-container"></div>
+</div>
 
 {% include "includes/footer.html" %}
