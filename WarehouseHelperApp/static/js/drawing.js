@@ -65,7 +65,6 @@ function initSvg() {
 
 function drawLabel(x, y, text, classes=null, color=null) {
     let classNames = LABEL_CLASS;
-    console.log(color);
     if (classes != null) classes.forEach((c) => classNames += " " + c);
     svgView.append("text")
         .attr("x", x)

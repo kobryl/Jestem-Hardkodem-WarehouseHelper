@@ -1,11 +1,13 @@
 {% include "includes/header.html" %}
 {% load static %}
 
-<h2>Import an order from csv file</h2>
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Import</button>
-</form>
+<div class="import" id="import-order">
+    <h2>Import an order from csv file</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Import</button>
+    </form>
+</div>
 
 {% include "includes/footer.html" %}

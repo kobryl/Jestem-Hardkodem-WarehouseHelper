@@ -61,26 +61,28 @@
     });
 </script>
 
-<h2>Create new order</h2>
-<form method="post">
-    {% csrf_token %}
-    {{ formset.management_form }}
-    {% for form in formset %}
-        <div class="row form-row spacer">
-            <div class="col-2">
-                <label>{{ form.product.label }}</label>
-            </div>
-            <div class="col-4">
-                <div class="input-group">
-                    {{ form.product }} &times; {{ form.quantity }}
-                    <div class="input-group-append">
-                        <button class="btn btn-success add-form-row" name="add-button">+</button>
+<div class="new" id="new-order">
+    <h2>Create new order</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ formset.management_form }}
+        {% for form in formset %}
+            <div class="row form-row spacer">
+                <div class="col-2">
+                    <label>{{ form.product.label }}</label>
+                </div>
+                <div class="col-4">
+                    <div class="input-group">
+                        {{ form.product }} &times; {{ form.quantity }}
+                        <div class="input-group-append">
+                            <button class="btn btn-success add-form-row" name="add-button">+</button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    {% endfor %}
-    <button type="submit">Submit for processing</button>
-</form>
+        {% endfor %}
+        <button type="submit">Submit for processing</button>
+    </form>
+</div>
 
 {% include "includes/footer.html" %}
