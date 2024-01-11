@@ -1,0 +1,11 @@
+{% include "includes/header.html" %}
+{% load static %}
+
+<h2>Import products from csv file</h2>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Import</button>
+</form>
+
+{% include "includes/footer.html" %}
