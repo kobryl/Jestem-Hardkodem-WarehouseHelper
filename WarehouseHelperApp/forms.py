@@ -1,6 +1,6 @@
 from django import forms
 
-from WarehouseHelperApp.models import Product
+from WarehouseHelperApp.models import Product, Order
 
 
 class CSVUploadForm(forms.Form):
@@ -18,3 +18,12 @@ class OrderForm(forms.Form):
 
 
 OrderFormset = forms.formset_factory(OrderForm, extra=1)
+
+
+class RouteSelectionForm(forms.Form):
+    order = forms.ModelChoiceField(
+        queryset=Order.objects.all(),
+        to_field_name='id',
+        required=True,
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )

@@ -3,10 +3,11 @@ Views for WarehouseHelperApp
 """
 import csv
 
+import django
 from django.shortcuts import render, redirect
 
-from WarehouseHelperApp.models import Product, ProductLocation, Order, OrderItem
-from WarehouseHelperApp.forms import CSVUploadForm, OrderForm, OrderFormset
+from WarehouseHelperApp.models import Product, ProductLocation, Order, OrderItem, Route
+from WarehouseHelperApp.forms import CSVUploadForm, OrderForm, OrderFormset, RouteSelectionForm
 from consts import ORDER_FILE_PREFIX, ORDERS_DIR, LOCATIONS_FILE, PRODUCTS_FILE
 
 
@@ -163,3 +164,21 @@ def new_order(request):
         formset = OrderFormset(request.GET or None)
 
     return render(request, template_name, {'formset': formset})
+
+
+def view_route(request):
+    """
+    View routee page
+    """
+    form = RouteSelectionForm(request.GET or None)
+    if form.is_valid():
+        order = form.cleaned_data['order']
+        try:
+            route = order.route
+            return render(request, 'index.html', {'route': route})
+        except Route.DoesNotExist:
+            return render(request, 'view_routes.html', {
+                'form': form,
+                'error': f'Route for order #{order.id} is not ready yet. Please check again later.'
+            }, status=425)
+    return render(request, 'view_routes.html', {'form': form})
