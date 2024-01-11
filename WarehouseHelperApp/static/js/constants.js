@@ -57,6 +57,7 @@ const DELIVERY_FILL_COLOR = "#F8DEBE";
 const DOOR_FILL_COLOR = "white";
 const ROW_LABEL_COLOR = "#aaa";
 const SHELF_LABEL_COLOR = "#aaa";
+const POINT_COLOR = "#ccc";
 
 // Drawing: Labels
 const OFFICE_LABEL = "OFFICE";

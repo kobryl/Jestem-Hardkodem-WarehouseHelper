@@ -1,5 +1,7 @@
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
 import Hall from "./classes/Hall.js";
+import { gridPoints } from "./gridPoints.js";
+import PathPoint from "./classes/PathPoint.js";
 
 
 let svg = d3.select("#" + WAREHOUSE_SVG_ID);
@@ -18,6 +20,11 @@ let halls = [
     new Hall(0, 2, 4, false, false),
     new Hall(1, 2, 5, false, true)
 ]
+
+let pathGrid = [];
+gridPoints.forEach((point) => {
+    pathGrid.push(new PathPoint(point[0], point[1], point[2], point[3]));
+});
 
 let drawLabels = true;
 
@@ -156,6 +163,14 @@ function drawVerticalDoor(x, y) {
         .attr("fill", DOOR_FILL_COLOR);
 }
 
+function drawGridPoint(x, y) {
+    svgView.append("circle")
+        .attr("cx", x)
+        .attr("cy", y)
+        .attr("r", 1)
+        .attr("stroke", POINT_COLOR);
+}
+
 function drawHall(hall) {
     let hallX = HALL_WIDTH * hall.gridX;
     let hallY = HALL_HEIGHT * hall.gridY;
@@ -228,3 +243,7 @@ function drawHalls(halls) {
 initSvg();
 window.addEventListener("resize", handleWindowResize);
 drawHalls(halls);
+
+pathGrid.forEach((point) => {
+    drawGridPoint(point.x, point.y);
+});
