@@ -20,11 +20,6 @@ function animate() {
 
 scene = new THREE.Scene();
 camera = new THREE.PerspectiveCamera( 60, viewportWidth / viewportHeight, 0.1, 10000);
-camera.lookAt(scene.position);
-
-light = new THREE.PointLight(0xffffff);
-light.position.set(0,150,100);
-scene.add(light);
 
 itemMaterial = new THREE.MeshNormalMaterial( { transparent: true, opacity: 0.6 } );
 
@@ -43,10 +38,14 @@ let palletMaxX = palletX;
 let palletMaxY = 2000;
 let palletMaxZ = palletZ;
 let exampleItems = [
-    new Item(0, 0, 0, 100, 200, 300)
+    new Item(0, 0, 0, 500, 300, 500),
+    new Item(0, 300, 0, 400, 600, 300),
+    new Item(500, 0, 500, 300, 600, 300)
 ];
 
 camera.position.set(1300, 1300, 1300);
+
+animate();
 
 let boundaryGeometry = new THREE.BoxGeometry(palletMaxX, palletMaxY, palletMaxZ);
 let edgesGeometry = new THREE.EdgesGeometry(boundaryGeometry);
@@ -62,4 +61,13 @@ let pallet = new THREE.Mesh(palletGeometry, palletMaterial);
 pallet.position.set(0, -(palletMaxY - palletY) / 2, 0);
 scene.add(pallet);
 
-animate();
+exampleItems.forEach((item, i) => {
+    let itemGeometry = new THREE.BoxGeometry(item.sizeX, item.sizeY, item.sizeZ);
+    let itemCube = new THREE.Mesh(itemGeometry, itemMaterial);
+    let itemX = -(palletMaxX - item.sizeX) / 2 + item.x;
+    let itemY = -(palletMaxY - item.sizeY) / 2 + item.y + palletY;
+    let itemZ = -(palletMaxZ - item.sizeZ) / 2 + item.z;
+    itemCube.position.set(itemX, itemY, itemZ);
+    itemCube.name = "item " + i;
+    scene.add(itemCube);
+});
