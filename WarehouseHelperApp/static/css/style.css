@@ -1,5 +1,9 @@
+
 .main {
     display: flex;
+}
+html {
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 #warehouse {
@@ -34,4 +38,75 @@
 
 .shelf-label {
     font-size: 8px;
+}
+
+.import,
+.new {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 40px auto 70px auto;
+    width: 350px;
+}
+
+.import h2,
+.new h2 {
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.import form,
+.new form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 30px;
+}
+
+.import form label {
+    margin-right: 8px;
+}
+
+.import form button[type=submit],
+.new form button[type=submit] {
+    margin-top: 20px;
+}
+
+.import button, input[type="file"]::file-selector-button {
+    padding: 6px 12px;
+}
+
+input[type="file"]::file-selector-button {
+    margin-right: 12px;
+}
+
+.new .row {
+    margin-bottom: 12px;
+}
+
+.new .col-2 {
+    margin-bottom: 6px;
+}
+
+.new .input-group-append {
+    margin: 6px 0;
+}
+
+.new .add-form-row,
+.new .remove-form-row {
+    display: block;
+    margin: 0 auto;
+}
+
+.new button {
+    padding: 6px 12px;
+}
+
+.new .input-group select,
+.new .input-group input {
+    padding: 4px 8px;
+}
+
+footer p {
+    text-align: center;
 }

@@ -18,7 +18,7 @@ const SVG_VIEW_HEIGHT = 900;         // px
 const SVG_ASPECT_RATIO = SVG_VIEW_WIDTH / SVG_VIEW_HEIGHT;
 const SVG_DEFAULT_ZOOM_CONSTRAINTS = [1, 5];            // [min, max] scales
 const SVG_TRANSLATE_CONSTRAINTS = [[0, 0], [SVG_VIEW_WIDTH, SVG_VIEW_HEIGHT]];            // [[min, max]_1, [min, max]_2]
-const SVG_MARGIN = 12;                   // px
+const SVG_MARGIN = 24;                   // px
 
 // Drawing: Warehouse sizes
 const HALL_GRID_X_SIZE = 2;
@@ -58,6 +58,9 @@ const DELIVERY_FILL_COLOR = "#F8DEBE";
 const DOOR_FILL_COLOR = "white";
 const ROW_LABEL_COLOR = "#aaa";
 const SHELF_LABEL_COLOR = "#aaa";
+const POINT_COLOR = "#ccc";
+const LINE_COLOR = "red";
+const LINE_WIDTH = 2;
 
 // Drawing: Labels
 const OFFICE_LABEL = "OFFICE";
