@@ -168,7 +168,8 @@ function drawGridPoint(x, y) {
         .attr("cx", x)
         .attr("cy", y)
         .attr("r", 1)
-        .attr("stroke", POINT_COLOR);
+        .attr("stroke", "transparent")
+        .attr("style", "fill: " + POINT_COLOR);
 }
 
 function drawHall(hall) {
