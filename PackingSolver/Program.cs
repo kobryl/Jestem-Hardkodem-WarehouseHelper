@@ -2,6 +2,7 @@
 using CromulentBisgetti.ContainerPacking.Entities;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace CromulentBisgetti.ContainerPacking
@@ -14,14 +15,32 @@ namespace CromulentBisgetti.ContainerPacking
             containers.Add(new Container(0, 800, 1200, 1856));
 
             List<Item> itemsToPack = new List<Item>();
-            itemsToPack.Add(new Item(0, 500, 500, 300, 5));
-            itemsToPack.Add(new Item(1, 200, 100, 300, 3));
-
+            string[] orders = Directory.GetFiles("data/Zamowienia", "*.txt");
+            foreach (string order in orders)
+            {
+                string[] lines = File.ReadAllLines(order);
+                foreach (string line in lines)
+                {
+                    string[] data = line.Split(' ');
+                    if (data.Length > 0)
+                    {
+                        int id = int.Parse(data[0]);
+                        int dim1 = int.Parse(data[2]);
+                        int dim2 = int.Parse(data[3]);
+                        int dim3 = int.Parse(data[4]);
+                        int quantity = int.Parse(data[6]);
+                        itemsToPack.Add(new Item(id, dim1, dim2, dim3, quantity));
+                    }
+                }
+            }
+            
             List<int> algorithms = new List<int>();
             algorithms.Add((int)AlgorithmType.EB_AFIT);
 
             List<ContainerPackingResult> result = PackingService.Pack(containers, itemsToPack, algorithms);
             List<Item> resultItems = result[0].AlgorithmPackingResults[0].PackedItems;
+            string res = "";
+            StreamWriter sw = new StreamWriter("data/pallet.txt");
             foreach (Item item in resultItems)
             {
                 Item oldItem = itemsToPack.Find(i => i.ID == item.ID);
@@ -45,8 +64,11 @@ namespace CromulentBisgetti.ContainerPacking
                     if (dx > 0) up = "+y";
                     else up = "-y";
                 }
-                Console.WriteLine("new Item(" + item.ID + ", " + item.CoordX.ToString() + ", " + item.CoordZ.ToString() + ", " + item.CoordY.ToString() + ", " + item.PackDimX.ToString() + ", " + item.PackDimZ.ToString() + ", " + item.PackDimY.ToString() + ", '" + up + "'),");
+                sw.WriteLine(item.ID + ", " + item.CoordX.ToString() + ", " + item.CoordZ.ToString() + ", " + item.CoordY.ToString() + ", " + item.PackDimX.ToString() + ", " + item.PackDimZ.ToString() + ", " + item.PackDimY.ToString() + ", '" + up + "\n");
             }
+            sw.Flush();
+            sw.Close();
+
         }
     }
 }
