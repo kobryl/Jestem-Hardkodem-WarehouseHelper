@@ -1,6 +1,17 @@
+.main {
+    display: flex;
+}
+
 #warehouse {
     margin: 8px;
     border: 1px solid black;
+    flex-shrink: 0;
+}
+
+#packing-container {
+    width: 300px;
+    height: 300px;
+    margin: 10px;
 }
 
 #warehouse view {
