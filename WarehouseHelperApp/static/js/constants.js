@@ -58,6 +58,8 @@ const DOOR_FILL_COLOR = "white";
 const ROW_LABEL_COLOR = "#aaa";
 const SHELF_LABEL_COLOR = "#aaa";
 const POINT_COLOR = "#ccc";
+const LINE_COLOR = "red";
+const LINE_WIDTH = 2;
 
 // Drawing: Labels
 const OFFICE_LABEL = "OFFICE";

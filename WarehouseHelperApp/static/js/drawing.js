@@ -172,6 +172,16 @@ function drawGridPoint(x, y) {
         .attr("style", "fill: " + POINT_COLOR);
 }
 
+function drawPath(x1, y1, x2, y2) {
+    svgView.append("line")
+        .attr("x1", x1)
+        .attr("y1", y1)
+        .attr("x2", x2)
+        .attr("y2", y2)
+        .attr("stroke", LINE_COLOR)
+        .attr("stroke-width", LINE_WIDTH);
+}
+
 function drawHall(hall) {
     let hallX = HALL_WIDTH * hall.gridX;
     let hallY = HALL_HEIGHT * hall.gridY;
@@ -244,7 +254,25 @@ function drawHalls(halls) {
 initSvg();
 window.addEventListener("resize", handleWindowResize);
 drawHalls(halls);
-
 pathGrid.forEach((point) => {
     drawGridPoint(point.x, point.y);
 });
+
+let path = "0 0 0 1 1 1 2 1 3 1 4 1 5 1 5 2 5 3 6 3";
+let pathIndices = path.split(" ");
+for (let i = 0; i < pathIndices.length - 2; i += 2) {
+    let ix1 = parseInt(pathIndices[i]);
+    let iy1 = parseInt(pathIndices[i + 1]);
+    let ix2 = parseInt(pathIndices[i + 2]);
+    let iy2 = parseInt(pathIndices[i + 3]);
+    let p1, p2;
+    for (let j = 0; j < pathGrid.length; j++) {
+        if (pathGrid[j].ix == ix1 && pathGrid[j].iy == iy1) {
+            p1 = pathGrid[j];
+        }
+        if (pathGrid[j].ix == ix2 && pathGrid[j].iy == iy2) {
+            p2 = pathGrid[j];
+        }
+    }
+    drawPath(p1.x, SVG_VIEW_HEIGHT - p1.y, p2.x, SVG_VIEW_HEIGHT - p2.y);
+}

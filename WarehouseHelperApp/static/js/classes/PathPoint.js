@@ -5,4 +5,8 @@ export default class PathPoint {
         this.x = x;
         this.y = y;
     }
+
+    get coords() {
+        return (this.x, this.y);
+    }
 }
