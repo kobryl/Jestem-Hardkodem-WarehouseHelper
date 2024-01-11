@@ -19,7 +19,7 @@ from django.urls import path
 from WarehouseHelperApp import views
 
 urlpatterns = [
-    path('', views.index, name='index'),
+    path('', views.view_route, name='index'),
     path('import/products/', views.import_products_from_csv, name='import_products_from_csv'),
     path('success/', views.success, name='success'),
     path('import/locations/', views.import_locations_from_csv, name='import_locations_from_csv'),

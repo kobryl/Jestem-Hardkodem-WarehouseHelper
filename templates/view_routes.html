@@ -1,0 +1,13 @@
+{% if error %}
+
+    <div class="error">
+        <p>{{ error }}</p>
+    </div>
+
+{% endif %}
+
+<form method="get">
+    {{ csrf_field }}
+    {{ form.as_p }}
+    <input type="submit" value="Show">
+</form>

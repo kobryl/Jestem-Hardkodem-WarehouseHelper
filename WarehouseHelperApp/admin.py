@@ -7,6 +7,8 @@ from WarehouseHelperApp import models
 
 # Register your models here.
 
+admin.site.register(models.Route)
+
 
 @admin.register(models.Product)
 class ProductAdmin(admin.ModelAdmin):
