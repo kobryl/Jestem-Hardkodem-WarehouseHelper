@@ -14,7 +14,9 @@ class OrderForm(forms.Form):
         required=True,
         widget=forms.Select(attrs={'class': 'form-control'})
     )
-    quantity = forms.IntegerField()
+    quantity = forms.IntegerField(
+        widget=forms.NumberInput(attrs={'placeholder': 'quantity'})
+    )
 
 
 OrderFormset = forms.formset_factory(OrderForm, extra=1)
